@@ -24,19 +24,6 @@ Inverta isso e o resultado piora dramaticamente, sempre.
 
 ---
 
-## Por que existe
-
-Em 2026, construí a fundação de um sistema regulatório complexo em **2 dias, sem escrever uma linha de código**:
-
-- 67 arquivos gerados e testados
-- 26 use cases em Gherkin com cobertura de CI
-- Cada decisão arquitetural com referência ao artigo de lei correspondente
-- Descoberta de um GAP técnico que parecia exigir meses de negociação — e não existia
-
-A XPAI foi a metodologia que tornou isso possível. Este repositório é a documentação pública dessa metodologia para que outros possam usá-la.
-
----
-
 ## A Metodologia
 
 📄 **[XPAI-v2.2.md](./XPAI-v2.2.md)** — Documentação completa da metodologia v2.2
@@ -48,6 +35,19 @@ Inclui:
 - Checklists operacionais (início de sessão, por tarefa, antes do deploy)
 - Protocolo de handoff entre agentes
 - Distinção entre regressão acidental e evolução de contrato
+
+---
+
+## Por que existe
+
+Em 2026, construí a fundação de um sistema regulatório complexo (DT-e/CIOT, MP 1.343/2026) em **2 dias, sem escrever uma linha de código**:
+
+- 67 arquivos gerados e testados
+- 26 use cases em Gherkin com cobertura de CI
+- Cada decisão arquitetural com referência ao artigo de lei correspondente
+- Descoberta de um GAP técnico que parecia exigir meses de negociação — e não existia
+
+A XPAI foi a metodologia que tornou isso possível. Este repositório é a documentação pública para que outros possam usá-la.
 
 ---
 
@@ -109,23 +109,23 @@ git clone https://github.com/[SEU_USUARIO]/xpai.git
 cd xpai
 
 # 2. Copie os templates para o seu projeto
-cp templates/CONSTITUTION.md   meu-projeto/
+cp templates/CONSTITUTION.md      meu-projeto/
 cp templates/CONTEXT_PLAYBOOK.md  meu-projeto/
-cp templates/WALKTHROUGH.md    meu-projeto/
+cp templates/WALKTHROUGH.md       meu-projeto/
 cp templates/SECURITY_CHECKLIST.md meu-projeto/
 
 # 3. Abra CONSTITUTION.md e personalize:
-#    - Stack tecnológico
-#    - Regras invioláveis do domínio
-#    - Non-Delegation Zones
-#    - Limites de complexidade
+#    — Stack tecnológico do projeto
+#    — Regras invioláveis do seu domínio
+#    — Non-Delegation Zones
+#    — Limites de complexidade
 
 # 4. Siga as 6 fases documentadas em XPAI-v2.2.md
 ```
 
 ---
 
-## Para Quem é
+## Para Quem É
 
 ✅ Engenheiros e arquitetos sêniors desenvolvendo em domínios com **regras críticas ou conformidade legal**
 
@@ -147,9 +147,9 @@ cp templates/SECURITY_CHECKLIST.md meu-projeto/
 
 ## Caso de Uso de Referência
 
-A metodologia foi desenvolvida e validada para o backend de um projeto — sistema de conformidade regulatória.
+A metodologia foi desenvolvida e validada no projeto **DT-e/CIOT** — sistema de conformidade regulatória do transporte rodoviário de cargas brasileiro (MP 1.343/2026).
 
-
+Mais detalhes: [`/examples/dte-ciot`](./examples/dte-ciot/)
 
 ---
 
@@ -187,9 +187,20 @@ xpai/
 |--------|------|---------------------|
 | 2.2.2 | Abr 2026 | Seção 5.3.1 — distinção regressão acidental vs evolução de contrato |
 | 2.2.1 | Abr 2026 | WALKTHROUGH.md, contexto calibrado por task (3.4), estrutura explícita (3.5), P8/P9/P10 |
-| 2.2 | Mar 2026 | Versão inicial publicada |
+| 2.2   | Mar 2026 | Versão inicial publicada |
 
 Histórico completo: [CHANGELOG.md](./CHANGELOG.md)
+
+---
+
+## Autor
+
+**Francisco Fabian de Macedo Almeida**
+Arquiteto de Software · Engenheiro de Software
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Francisco%20Fabian-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/francisco-fabian-macedo-almeida-8911578b/)
+
+Programador desde 2001, com experiência em sistemas regulatórios, arquitetura orientada a eventos e desenvolvimento assistido por IA. A XPAI foi desenvolvida a partir de prática real — não de teoria — durante a construção de um protótipo de sistema em 2026.
 
 ---
 
