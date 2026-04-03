@@ -13,7 +13,7 @@ Arquiteto de Software · Engenheiro de Software
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Francisco%20Fabian-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/francisco-fabian-macedo-almeida-8911578b/)
 
-Engenheiro de software desde 2001, com experiência em sistemas regulatórios, arquitetura orientada a eventos e desenvolvimento assistido por IA. A XPAI foi desenvolvida a partir de prática real — não de teoria — durante a construção do sistema DT-e/CIOT em 2026.
+Programador desde 2001, com experiência em sistemas regulatórios, arquitetura orientada a eventos e desenvolvimento assistido por IA. A XPAI foi desenvolvida a partir de prática real — não de teoria — durante a construção do sistema DT-e/CIOT em 2026.
 
 ---
 
@@ -377,7 +377,7 @@ Sem o contexto injetado, o agente começa do zero — e vai repetir erros que vo
 ### Copiando os templates
 
 ```bash
-git clone https://github.com/[SEU_USUARIO]/xpai.git
+git clone https://github.com/fabianalmeida/xpai.git
 
 cp xpai/templates/CONSTITUTION.md      meu-projeto/
 cp xpai/templates/CONTEXT_PLAYBOOK.md  meu-projeto/
