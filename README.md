@@ -6,6 +6,10 @@
 
 ---
 
+![Metodologa XPAI v2.2](docs/images/metodologia_xpai_2.2.png)
+
+---
+
 ## Autor
 
 **Francisco Fabian de Macedo Almeida**
