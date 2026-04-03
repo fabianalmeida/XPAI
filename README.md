@@ -6,6 +6,17 @@
 
 ---
 
+## Autor
+
+**Francisco Fabian de Macedo Almeida**
+Arquiteto de Software · Engenheiro de Software
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Francisco%20Fabian-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/francisco-fabian-macedo-almeida-8911578b/)
+
+Engenheiro de software desde 2001, com experiência em sistemas regulatórios, arquitetura orientada a eventos e desenvolvimento assistido por IA. A XPAI foi desenvolvida a partir de prática real — não de teoria — durante a construção do sistema DT-e/CIOT em 2026.
+
+---
+
 ## O que é a XPAI
 
 XPAI é uma metodologia de desenvolvimento de software assistido por IA para equipes e engenheiros que trabalham em domínios com **regras de negócio críticas, conformidade legal ou invariantes que não podem ser violadas**.
@@ -175,17 +186,171 @@ Só avance depois de validar. A CONSTITUTION.md é lida pelo agente em toda sess
 
 ### Passo 4 — Execute as 6 fases
 
-Com os artefatos iniciais validados, siga as fases documentadas em [XPAI-v2.2.md](./XPAI-v2.2.md):
+#### F0 — Bootstrap & Constitution *(1–2h · gate humano obrigatório)*
 
-| Fase | O que fazer |
-|------|-------------|
-| **F0** | CONSTITUTION.md revisada e commitada |
-| **F1** | Expandir PROJECT_SPEC.md com todos os use cases em Gherkin |
-| **F2** | ARCHITECTURE.md com cada decisão técnica justificada |
-| **F3** | TASK_BREAKDOWN.md com tasks INVEST e prompt por task |
-| **F4** | Ciclo TDD para cada task — testes antes da implementação |
-| **F5** | Refactoring a cada 5-10 commits |
-| **F6** | Atualizar CONTEXT_PLAYBOOK.md e WALKTHROUGH.md |
+Já feito nos passos anteriores. Antes de avançar, confirme:
+
+- CONSTITUTION.md commitada e revisada por humano
+- Stack tecnológico fixado e sem ambiguidade
+- Non-Delegation Zones definidas
+- Regras invioláveis com razão concreta explicitada
+
+Nenhuma task de implementação começa sem a F0 concluída.
+
+---
+
+#### F1 — Specification *(2–4h)*
+
+Expanda o PROJECT_SPEC.md com todos os use cases em Gherkin. Cada cenário descreve um comportamento observável do sistema — não uma decisão de implementação.
+
+**Prompt para o agente:**
+```
+Leia CONSTITUTION.md e PROJECT_SPEC.md.
+
+Com base no domínio descrito, expanda o ACCEPTANCE_TESTS.md com use cases
+completos em Gherkin cobrindo:
+- Caminho feliz (operação válida do início ao fim)
+- Rejeições por regra de negócio (cada invariante da CONSTITUTION.md deve ter ao menos um cenário de rejeição)
+- Casos de borda (valores exatos no limite, campos ausentes, estados intermediários)
+- Falhas de infraestrutura (serviço externo indisponível, timeout, retry)
+
+Para cada cenário, inclua o campo `referenciaLegal` no Then quando a regra
+tiver âncora normativa.
+
+Não gere código. Apenas os cenários Gherkin.
+```
+
+> Os acceptance tests gerados aqui são a especificação executável do sistema. Eles viram testes de integração na F4 — e **nunca são alterados para "fazer o CI passar"**. Se um acceptance test quebra, a implementação está errada.
+
+---
+
+#### F2 — Technical Plan *(1–2h)*
+
+Gere o ARCHITECTURE.md. Cada decisão arquitetural deve ter uma justificativa — técnica, legal ou de domínio. Sem justificativa, é preferência; com justificativa, é restrição.
+
+**Prompt para o agente:**
+```
+Leia CONSTITUTION.md, PROJECT_SPEC.md e ACCEPTANCE_TESTS.md.
+
+Gere o ARCHITECTURE.md com:
+
+1. Padrão arquitetural escolhido e justificativa
+   (ex: Event Sourcing porque imutabilidade de evidências é requisito legal — Art. X)
+
+2. Diagrama de componentes em texto (ASCII ou Mermaid)
+   — todos os serviços, seus papéis e como se comunicam
+
+3. Fluxo crítico passo a passo
+   — a operação principal do sistema, da entrada ao retorno, com cada validação numerada
+
+4. Decisões técnicas com justificativa
+   — para cada padrão usado (CQRS, Saga, ABAC, etc.): por que existe, qual requisito atende
+
+5. SLAs técnicos derivados do domínio
+   — latência, disponibilidade, retenção de dados — com a origem de cada requisito
+
+6. Constraints explícitos
+   — o que o sistema nunca faz do ponto de vista arquitetural
+
+Não gere código. Apenas o documento de arquitetura.
+```
+
+> Revise especialmente o fluxo crítico. A ordem das validações importa — em sistemas regulatórios, validar o campo errado na sequência errada pode gerar consequências legais. Se o sistema tem uma sequência obrigatória definida em lei, ela deve aparecer explicitamente aqui.
+
+---
+
+#### F3 — Task Breakdown *(1h)*
+
+Decomponha o sistema em tarefas atômicas executáveis pelo agente, no critério INVEST.
+
+**Prompt para o agente:**
+```
+Leia CONSTITUTION.md, ARCHITECTURE.md e ACCEPTANCE_TESTS.md.
+
+Gere o TASK_BREAKDOWN.md decompondo a implementação em tasks INVEST:
+[I]ndependent — executável sem depender de task não concluída
+[N]egotiable — escopo ajustável sem quebrar o todo
+[V]aluable — entrega valor verificável por si só
+[E]stimable — entre 1h e 8h de trabalho do agente
+[S]mall — cabe em uma janela de contexto
+[T]estable — tem critério de aceitação verificável
+
+Para cada task, inclua:
+- Critérios INVEST preenchidos
+- Prompt pronto para colar no agente (com lista de arquivos de contexto específicos)
+- Estrutura de arquivos a criar (caminhos exatos, incluindo testes)
+- Entregável verificável
+- Flag [REVISÃO HUMANA OBRIGATÓRIA] se tocar em Non-Delegation Zone
+
+Comece pelas tasks de infraestrutura e fundação, depois domínio, depois integrações.
+```
+
+> Tasks que tocam em Non-Delegation Zones (segurança, lógica crítica, infraestrutura de produção) devem ter revisão humana obrigatória antes do merge — independentemente de o CI estar verde.
+
+---
+
+#### F4 — TDD Cycle *(30–60min por task)*
+
+Para cada task do TASK_BREAKDOWN.md, execute o ciclo:
+
+```
+1. Abrir nova sessão no agente
+2. Colar os arquivos de contexto listados na task
+   (sempre: CONSTITUTION.md + CONTEXT_PLAYBOOK.md + WALKTHROUGH.md)
+3. Colar o prompt da task
+4. Revisar o plano proposto pelo agente ANTES de pedir implementação
+5. Agente gera testes → agente gera implementação
+6. CI roda — testes passam
+7. Revisar diff antes de commitar
+8. Atualizar WALKTHROUGH.md e CONTEXT_PLAYBOOK.md
+```
+
+**Atenção à distinção entre tipos de quebra de teste:**
+
+| Tipo | Causa | Protocolo |
+|------|-------|-----------|
+| Regressão acidental | Bug na nova implementação | Corrigir o código. Nunca alterar o teste. |
+| Evolução de contrato | Mudança estrutural intencional | Atualizar o teste. Revisão humana obrigatória. Documentar no WALKTHROUGH.md. |
+
+Acceptance tests **nunca** são evolução de contrato. Se quebram, o código está errado.
+
+---
+
+#### F5 — Refactoring & Hardening *(a cada 5–10 commits)*
+
+```
+Leia CONSTITUTION.md e CONTEXT_PLAYBOOK.md.
+
+Analise os últimos [N] commits e identifique:
+- Arquivos com mais de 200 LOC
+- Duplicação de lógica (3x ou mais)
+- Complexidade ciclomática acima de 10
+- Abstrações prematuras ou ausentes
+
+Proponha um plano de refactoring que mantenha todos os testes verdes.
+Não implemente ainda — apresente o plano para aprovação.
+```
+
+---
+
+#### F6 — ACE Playbook Update *(ao finalizar cada task)*
+
+Ao finalizar cada task, o agente deve executar duas atualizações:
+
+**WALKTHROUGH.md** — histórico detalhado da task:
+- O que foi implementado e decisões técnicas tomadas
+- Bugs encontrados e como foram resolvidos
+- Desvios do plano original
+- Status do build
+- Pendências para a próxima sessão
+
+**CONTEXT_PLAYBOOK.md** — apenas padrões recorrentes promovidos do walkthrough:
+- `[ts-xxxxx]` para bugs que outro agente provavelmente repetiria
+- `[shr-xxxxx]` para decisões que devem virar regra permanente
+- `[dk-xxxxx]` para conhecimento de domínio descoberto
+- `[hurdle-xxx]` para problemas em aberto
+
+> Não promova bugs de ambiente local. Só o que vale para qualquer agente, em qualquer sessão futura.
 
 ---
 
@@ -287,18 +452,6 @@ xpai/
 | 2.2   | Mar 2026 | Versão inicial publicada |
 
 Histórico completo: [CHANGELOG.md](./CHANGELOG.md)
-
-
----
-
-## Autor
-
-**Francisco Fabian de Macedo Almeida**
-Arquiteto de Software · Engenheiro de Software
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Francisco%20Fabian-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/francisco-fabian-macedo-almeida-8911578b/)
-
-Engenheiro de software desde 2001, com experiência em sistemas regulatórios, arquitetura orientada a eventos e desenvolvimento assistido por IA. A XPAI foi desenvolvida a partir de prática real — não de teoria — durante a construção de um sistema em 2026.
 
 ---
 
