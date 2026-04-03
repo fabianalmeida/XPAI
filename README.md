@@ -6,7 +6,7 @@
 
 ---
 
-![Metodologa XPAI v2.2](metodologia_xpai_2.2.png)
+![Metodologa XPAI v2.2](docs/images/metodologia_xpai_2.2.png)
 
 ---
 
