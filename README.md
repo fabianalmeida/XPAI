@@ -26,7 +26,7 @@ Inverta isso e o resultado piora dramaticamente, sempre.
 
 ## Por que existe
 
-Em 2026, construí a fundação de um sistema regulatório complexo (DT-e/CIOT, MP 1.343/2026) em **2 dias, sem escrever uma linha de código**:
+Em 2026, construí a fundação de um sistema regulatório complexo em **2 dias, sem escrever uma linha de código**:
 
 - 67 arquivos gerados e testados
 - 26 use cases em Gherkin com cobertura de CI
@@ -147,9 +147,9 @@ cp templates/SECURITY_CHECKLIST.md meu-projeto/
 
 ## Caso de Uso de Referência
 
-A metodologia foi desenvolvida e validada no projeto **DT-e/CIOT** — sistema de conformidade regulatória do transporte rodoviário de cargas brasileiro (MP 1.343/2026).
+A metodologia foi desenvolvida e validada para o backend de um projeto — sistema de conformidade regulatória.
 
-Mais detalhes: [`/examples/dte-ciot`](./examples/dte-ciot/)
+
 
 ---
 
