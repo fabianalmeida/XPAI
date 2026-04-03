@@ -101,26 +101,123 @@ Templates prontos para uso em [`/templates`](./templates/).
 
 ---
 
-## Início Rápido
+## Como Usar
+
+A XPAI parte de uma premissa: **você já sabe o que o sistema deve fazer** — inclusive o que ele não pode fazer sob nenhuma circunstância. O agente implementa. Você especifica.
+
+O ponto de entrada não é o código. É o domínio.
+
+---
+
+### Passo 1 — Reúna o conhecimento do domínio
+
+Antes de abrir o editor ou o chat do LLM, responda por escrito:
+
+- **O que o sistema faz?** Em uma frase com verbo e sujeito mensuráveis.
+- **O que o sistema nunca pode fazer?** Liste as invariantes — comportamentos cuja violação tem consequência real (multa, fraude, dado incorreto, falha de segurança).
+- **Qual a base normativa?** Se houver legislação, regulamento, política interna ou contrato que rege o sistema — reúna os documentos. A lei é uma especificação formal; você vai usá-la diretamente.
+
+> **Exemplo:** "O sistema gera CIOTs para operações de transporte de cargas. Nunca pode gerar um CIOT com valor de frete abaixo do piso mínimo legal (Art. 1º-B Res. 6.078/2026). Base: MP 1.343/2026, Res. ANTT 6.077/2026, Decreto 11.313/2022."
+
+Se você não consegue responder essas três perguntas com precisão, a XPAI vai amplificar a ambiguidade — não resolvê-la. Volte para o domínio antes de continuar.
+
+---
+
+### Passo 2 — Gere a estrutura de artefatos com o agente
+
+Com o conhecimento de domínio em mãos, abra o agente e use este prompt:
+
+```
+Vou usar a metodologia XPAI v2.2 (Spec-Driven Vibe Coding) para desenvolver
+o seguinte sistema:
+
+[DESCREVA O SISTEMA em 2-5 parágrafos: o que faz, quem usa, qual o problema que resolve]
+
+Regras invioláveis do domínio:
+- [regra 1 — com consequência explícita se violada]
+- [regra 2]
+- [regra 3]
+
+Base normativa (se houver):
+- [documento 1]
+- [documento 2]
+
+Stack tecnológico definido:
+- [linguagem, framework, banco, CI]
+
+Com base nisso, gere os seguintes artefatos iniciais da metodologia XPAI:
+1. CONSTITUTION.md — com as regras invioláveis, stack, Non-Delegation Zones e limites de complexidade
+2. PROJECT_SPEC.md — com problem statement, goals, non-goals e primeiros use cases em Gherkin
+3. CONTEXT_PLAYBOOK.md — estrutura inicial com o overview do projeto
+4. WALKTHROUGH.md — estrutura vazia pronta para uso
+
+Não gere código. Apenas os artefatos de especificação.
+```
+
+> O agente vai produzir a estrutura. Você vai revisar e corrigir — especialmente a CONSTITUTION.md, que define o que o agente nunca pode fazer. Essa revisão é obrigatória e é o trabalho mais importante do projeto.
+
+---
+
+### Passo 3 — Revise a CONSTITUTION.md (gate humano obrigatório)
+
+Abra o arquivo gerado e verifique:
+
+- [ ] As regras invioláveis estão com a **razão concreta** explicitada?
+  - ❌ "Use BigDecimal para valores monetários"
+  - ✅ "NUNCA use float para valorFrete — float(1306.14) pode ser 1306.1399999... e bloquear um frete legal com multa de R$ 10.500 por operação"
+- [ ] As **Non-Delegation Zones** cobrem segurança, lógica crítica e infraestrutura?
+- [ ] O **stack tecnológico** está fixado e não deixa margem para o agente escolher alternativas?
+- [ ] Os **limites de complexidade** estão definidos (LOC por arquivo, parâmetros por função)?
+
+Só avance depois de validar. A CONSTITUTION.md é lida pelo agente em toda sessão — o que não estiver aqui, o agente vai inventar.
+
+---
+
+### Passo 4 — Execute as 6 fases
+
+Com os artefatos iniciais validados, siga as fases documentadas em [XPAI-v2.2.md](./XPAI-v2.2.md):
+
+| Fase | O que fazer |
+|------|-------------|
+| **F0** | CONSTITUTION.md revisada e commitada |
+| **F1** | Expandir PROJECT_SPEC.md com todos os use cases em Gherkin |
+| **F2** | ARCHITECTURE.md com cada decisão técnica justificada |
+| **F3** | TASK_BREAKDOWN.md com tasks INVEST e prompt por task |
+| **F4** | Ciclo TDD para cada task — testes antes da implementação |
+| **F5** | Refactoring a cada 5-10 commits |
+| **F6** | Atualizar CONTEXT_PLAYBOOK.md e WALKTHROUGH.md |
+
+---
+
+### Regra de ouro para toda sessão com o agente
+
+Sempre comece a sessão colando estes arquivos **antes** do prompt da task:
+
+```
+Arquivos obrigatórios em toda sessão:
+- CONSTITUTION.md
+- CONTEXT_PLAYBOOK.md
+- WALKTHROUGH.md
+
+Arquivos por tipo de task:
+- ACCEPTANCE_TESTS.md  → tasks com lógica de negócio observável
+- ARCHITECTURE.md      → tasks estruturais
+- SECURITY_CHECKLIST.md → tasks com superfície de segurança
+```
+
+Sem o contexto injetado, o agente começa do zero — e vai repetir erros que você já resolveu.
+
+---
+
+### Copiando os templates
 
 ```bash
-# 1. Clone o repositório
 git clone https://github.com/[SEU_USUARIO]/xpai.git
-cd xpai
 
-# 2. Copie os templates para o seu projeto
-cp templates/CONSTITUTION.md      meu-projeto/
-cp templates/CONTEXT_PLAYBOOK.md  meu-projeto/
-cp templates/WALKTHROUGH.md       meu-projeto/
-cp templates/SECURITY_CHECKLIST.md meu-projeto/
-
-# 3. Abra CONSTITUTION.md e personalize:
-#    — Stack tecnológico do projeto
-#    — Regras invioláveis do seu domínio
-#    — Non-Delegation Zones
-#    — Limites de complexidade
-
-# 4. Siga as 6 fases documentadas em XPAI-v2.2.md
+cp xpai/templates/CONSTITUTION.md      meu-projeto/
+cp xpai/templates/CONTEXT_PLAYBOOK.md  meu-projeto/
+cp xpai/templates/WALKTHROUGH.md       meu-projeto/
+cp xpai/templates/SECURITY_CHECKLIST.md meu-projeto/
 ```
 
 ---
@@ -191,6 +288,7 @@ xpai/
 
 Histórico completo: [CHANGELOG.md](./CHANGELOG.md)
 
+
 ---
 
 ## Autor
@@ -200,7 +298,7 @@ Arquiteto de Software · Engenheiro de Software
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Francisco%20Fabian-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/francisco-fabian-macedo-almeida-8911578b/)
 
-Programador desde 2001, com experiência em sistemas regulatórios, arquitetura orientada a eventos e desenvolvimento assistido por IA. A XPAI foi desenvolvida a partir de prática real — não de teoria — durante a construção de um protótipo de sistema em 2026.
+Engenheiro de software desde 2001, com experiência em sistemas regulatórios, arquitetura orientada a eventos e desenvolvimento assistido por IA. A XPAI foi desenvolvida a partir de prática real — não de teoria — durante a construção de um sistema em 2026.
 
 ---
 
